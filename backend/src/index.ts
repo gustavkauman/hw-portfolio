@@ -7,6 +7,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
         interface User {
             id: number;
@@ -40,13 +41,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/secret", ensureAuthenticated, (req, res) => res.send("very secret"));
-
-/*
-app.get("/secret", passport.authenticate('session'), (req, res) => {
-    res.send("very secret. shh....");
-});
-*/
-    
 
 app.listen(PORT, () => {
     console.log(`Server started listening on port ${PORT}`);
