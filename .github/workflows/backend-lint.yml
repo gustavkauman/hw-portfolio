@@ -1,0 +1,25 @@
+name: Backend Lint
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - .github/workflows/backend-lint.yml
+      - backend/**
+
+defaults:
+  run:
+    working-directory: backend/
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+      - run: npm ci
+      - run: npm run lint
