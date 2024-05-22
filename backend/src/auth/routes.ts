@@ -55,6 +55,7 @@ router.get("/me", ensureAuthenticated, async (req: Request, res: Response) => {
             return res.status(404).send({ message: "User was not found" });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const returnValue: any = { ...user };
         delete returnValue.password_hash;
 

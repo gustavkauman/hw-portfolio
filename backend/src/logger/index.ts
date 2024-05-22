@@ -7,6 +7,7 @@ function log(type: string, message: string) {
     console.log(`${currrentDateTime.toISOString()} [${type.toUpperCase()}] ${message}`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function logObject(input: any) {
     if (process.env.NODE_ENV === "test")
         return;
