@@ -55,11 +55,7 @@ router.get("/me", ensureAuthenticated, async (req: Request, res: Response) => {
             return res.status(404).send({ message: "User was not found" });
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const returnValue: any = { ...user };
-        delete returnValue.password_hash;
-
-        return res.status(200).send(returnValue);
+        return res.status(200).send(user);
     } catch (e) {
         return res.status(500).send({
             message: "Error while fetching user",

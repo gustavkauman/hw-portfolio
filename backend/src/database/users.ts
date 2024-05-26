@@ -14,6 +14,14 @@ type DatabaseUser = {
     id: string;
     email: string;
     name: string;
+    created_at: Date;
+    modified_at: Date;
+}
+
+type DatabaseUserWithPasswordHash = {
+    id: string;
+    email: string;
+    name: string;
     password_hash: string;
     created_at: Date;
     modified_at: Date;
@@ -41,7 +49,7 @@ async function insertUser(user: CreateUser): Promise<boolean> {
     return true;
 }
 
-async function getUserByEmail(email: string): Promise<DatabaseUser | null> {
+async function getUserByEmail(email: string): Promise<DatabaseUserWithPasswordHash | null> {
     try {
         const result =
             await pool.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -60,7 +68,7 @@ async function getUserByEmail(email: string): Promise<DatabaseUser | null> {
 async function getUserById(id: string): Promise<DatabaseUser | null> {
     try {
         const result =
-            await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+            await pool.query("SELECT id, email, name, created_at, modified_at FROM users WHERE id = $1", [id]);
 
         if (result.rows.length <= 0)
             return null;
