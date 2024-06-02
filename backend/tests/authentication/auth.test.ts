@@ -40,7 +40,7 @@ describe('Basic server tests', () => {
 
 describe('Authentication tests', () => {
     beforeEach(async () => {
-        await pool.query('truncate "users"');
+        await pool.query('truncate "users" cascade');
         await pool.query('truncate "user_sessions"');
     });
 

@@ -7,6 +7,8 @@ import { DbConfig, pgSessionStore, pool, runMigrations, testDatabaseConnection }
 import { logger } from "./logger/";
 import { Server } from "http";
 import { createPool } from "./database/psql";
+import { deviceRouter } from "./device/routes";
+import { componentRouter } from "./component/routes";
 
 dotenv.config();
 
@@ -19,12 +21,10 @@ declare global {
     }
 }
 
-const PORT = parseInt(process.env.PORT as string, 10) || 8080;
-
 const app = express();
 
 let server: Server;
-async function setupServer(dbConfig?: DbConfig) {
+async function setupServer(dbConfig?: DbConfig, port?: number) {
     if (server)
         return;
 
@@ -36,6 +36,10 @@ async function setupServer(dbConfig?: DbConfig) {
             port: parseInt(process.env.DATABASE_PORT ?? "") || 5432,
             database: process.env.DATABASE_NAME ?? ""
         };
+    }
+
+    if (!port) {
+        port = parseInt(process.env.PORT as string, 10) || 8080;
     }
 
     createPool(dbConfig);
@@ -72,13 +76,15 @@ async function setupServer(dbConfig?: DbConfig) {
     app.use(express.json());
 
     app.use("/auth", authRouter);
+    app.use("/devices", deviceRouter);
+    app.use("/components", componentRouter);
 
     app.get("/hello-world", (_req, res) => {
         res.send({ message: "Hello, World!" });
     });
 
-    server = app.listen(PORT, () => {
-        logger.info(`Server started listening on port ${PORT}`);
+    server = app.listen(port, () => {
+        logger.info(`Server started listening on port ${port}`);
     });
 
     server.on('close', async () => {

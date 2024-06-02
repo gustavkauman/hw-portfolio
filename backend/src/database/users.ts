@@ -27,7 +27,7 @@ type DatabaseUserWithPasswordHash = {
     modified_at: Date;
 }
 
-async function insertUser(user: CreateUser): Promise<boolean> {
+async function insertUser(user: CreateUser): Promise<DatabaseUser | null> {
     const passwordHash = await bcrypt.hash(user.password, SALT_ROUNDS);
 
     try {
@@ -38,15 +38,15 @@ async function insertUser(user: CreateUser): Promise<boolean> {
         );
 
         if (result.rows.length <= 0)
-            return false;
+            return null;
+
+        return result.rows[0] as DatabaseUser;
     } catch (e) {
         logger.error(`Failed to create user due to a database error`);
         logger.logObject(e);
 
-        return false;
+        return null;
     }
-
-    return true;
 }
 
 async function getUserByEmail(email: string): Promise<DatabaseUserWithPasswordHash | null> {
